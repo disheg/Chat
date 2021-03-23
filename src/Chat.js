@@ -66,7 +66,6 @@ const Chat = ({ socket }) => {
         <div className="mt-auto">
           <form noValidate onSubmit={(e) => {
               e.preventDefault();
-              throw new Error('react test error');
               dispatch(handleSubmit(currentChannelID, message, userName));
             }}>
             <div className="from-group">
