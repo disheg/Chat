@@ -2,13 +2,18 @@
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
-import React from 'react';
-import ReactDOM from 'react-dom'; 
 import '../assets/application.scss';
 
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import store from './store';
 import gon from 'gon';
+import faker from 'faker';
+import Cookies from 'js-cookie';
 
 import App from './App';
+import socket from './socket';
 
 if (process.env.NODE_ENV !== 'production') {
   localStorage.debug = 'chat:*';
@@ -36,8 +41,17 @@ console.log('it works!');
 console.log('gon', gon);
 
 const initialState = { ...gon };
+const sock = socket();
+
+const userNameCookies = Cookies.get('userName');
+const userName = userNameCookies || Cookies.set('userName', faker.name.findName());
+export const UserName = React.createContext(userName);
 
 ReactDOM.render(
-  <App state={initialState} />,
+  <Provider store={store}>
+    <UserName.Provider value={userName}>
+      <App state={initialState} socket={sock} />
+    </UserName.Provider>
+  </Provider>,
   container,
 );
