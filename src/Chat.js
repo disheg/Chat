@@ -31,7 +31,7 @@ const Chat = ({ socket }) => {
     return async dispatch => {
       dispatch(sending());
       try {
-        await axios.post('', { data: {
+        await axios.post(routes.channelMessagesPath(id), { data: {
           attributes: {
             value: message,
             user: user,
