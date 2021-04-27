@@ -96,6 +96,7 @@ export default (app, io, defaultState = {}) => {
           attributes: channel,
         },
       };
+      console.log('rename', data);
       reply.send(data);
       io.emit('renameChannel', data);
     })

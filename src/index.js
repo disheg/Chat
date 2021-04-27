@@ -7,13 +7,14 @@ import '../assets/application.scss';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import store from './store';
+import store from './store/store';
 import gon from 'gon';
 import faker from 'faker';
 import Cookies from 'js-cookie';
 
 import App from './App';
 import socket from './socket';
+import UserName from './UserNameContext';
 
 if (process.env.NODE_ENV !== 'production') {
   localStorage.debug = 'chat:*';
@@ -45,7 +46,6 @@ const sock = socket();
 
 const userNameCookies = Cookies.get('userName');
 const userName = userNameCookies || Cookies.set('userName', faker.name.findName());
-export const UserName = React.createContext(userName);
 
 ReactDOM.render(
   <Provider store={store}>

@@ -1,61 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Button, ButtonGroup, DropdownButton, Dropdown } from 'react-bootstrap';
 import _ from 'lodash';
 import { useSelector, useDispatch } from 'react-redux';
 import CustomModal from './Modal';
 import { changeChannel } from './slices/channelsSlice';
-import routes from './routes';
-import { newChannel, renameChannel, removeChannel, sending, failed, successful } from './slices/channelsSlice';
+import { newChannel, renameChannel, removeChannel, newChannelSocket, renameChannelSocket, removeChannelSocket } from './slices/channelsSlice';
 
-const submitNewChannel = (channelName) => {
-  return async dispatch => {
-    dispatch(sending());
-    try {
-      await axios.post(routes.channelsPath(), { data: {
-        attributes: {
-          name: channelName.trim(),
-        }
-      }});
-      setShowModal(false);
-      dispatch(successful());
-    } catch (error) {
-      dispatch(failed({ error: error.message }));
+const ChannelBtn = ({ id, name, currentChannelID, removable, handleChangeChannel, handleRemoveChannel, handleChangeChannelName}) => {
+  const btnColor = parseInt(currentChannelID) === parseInt(id) ? 'primary' : 'light';
+    const removableBtnCN = "nav-link text-left flex-grow-1 btn-" + btnColor;
+    const defaultBtnCN = "nav-link btn-block mb-2 text-left btn btn-" + btnColor;
+    if (!removable) {
+      return (
+        <li key={_.uniqueId(name)} className="nav-item">
+          <button className={defaultBtnCN} onClick={handleChangeChannel(id)}>{name}</button>
+        </li>
+      );
     }
-  }
+    return (
+      <li key={_.uniqueId(name)} className="nav-item">
+        <ButtonGroup className="d-flex dropdown mb-2">
+          <Button className={removableBtnCN} onClick={handleChangeChannel(id)}>{name}</Button>
+          <DropdownButton as={ButtonGroup} title="" id="bg-nested-dropdown" variant={btnColor}>
+            <Dropdown.Item eventKey="1" onClick={handleChangeChannelName(id)}>Change Name</Dropdown.Item>
+            <Dropdown.Item eventKey="2" onClick={handleRemoveChannel(id)}>Delete Chanel</Dropdown.Item>
+          </DropdownButton>
+        </ButtonGroup>
+      </li>
+    );
 };
 
-const handleRenameChannel = (id, channelName) => {
-  return async dispatch => {
-    dispatch(sending());
-    try {
-      await axios.patch(routes.channelPath(id), { data: {
-        attributes: {
-          name: channelName,
-        }
-      }});
-      dispatch(successful());
-    } catch (error) {
-      dispatch(failed({ error: error.message }));
-    }
-  }
-};
-
-const handleRemoveChannel = (id) => {
-  return async dispatch => {
-    dispatch(sending());
-    try {
-      await axios.delete(routes.channelPath(id), { data: {
-        attributes: {
-          id: id,
-        }
-      }});
-      dispatch(successful());
-    } catch (error) {
-      dispatch(failed({ error: error.message }));
-    }
-  }
-};
 
 const Channels = ({ socket }) => {
   const [showModal, setShowModal] = useState(false);
@@ -68,23 +42,33 @@ const Channels = ({ socket }) => {
   const state = useSelector((state) => state.channels.state);
 
   useEffect(() => {
-    socket.on('newChannel', (data) => dispatch(newChannel(data)));
-    socket.on('renameChannel', (data) => dispatch(renameChannel(data)));
-    socket.on('removeChannel', (data) => dispatch(removeChannel(data)));
+    socket.on('newChannel', (data) => dispatch(newChannelSocket(data)));
+    socket.on('renameChannel', (data) => dispatch(renameChannelSocket(data)));
+    socket.on('removeChannel', (data) => dispatch(removeChannelSocket(data)));
   }, []);
 
   const handleSubmitNewChannel = (channelName) => {
     if (channelName) {
-      dispatch(submitNewChannel(channelName));
+      dispatch(newChannel(channelName));
     }
   };
 
   const handleSubmitRenameChannel = (id) => (channelName) => {
-    console.log('handleSubmitRenameChannel', id)
+    console.log('handleSubmitRenameChannel', id, channelName)
     if (channelName) {
-      dispatch(handleRenameChannel(id, channelName));
+      console.log('handleName', channelName)
+      dispatch(renameChannel({id, channelName}));
     }
   };
+
+  const handleChangeChannelName = (id) => (e) => {
+    setCurrentID(id);
+    setCurrentModal('renameChannel');
+    setShowModal(true);
+  };
+
+  const handleChangeChannel = (id) => (e) => dispatch(changeChannel({ id: id }));
+  const handleRemoveChannel = (id) => (e) => dispatch(removeChannel(id));
 
   const modal = {
     renameChannel: {
@@ -97,39 +81,19 @@ const Channels = ({ socket }) => {
     }
   };
 
-  const handleClick = (id) => (e) => {
-    setCurrentID(id);
-    setCurrentModal('renameChannel');
-    setShowModal(true);
-  };
-
-
-  console.log("channelsSort before", channels)
   const channelsSort = _.sortBy(channels, ['id']);
-  console.log("channelsSort after", channelsSort)
-  const renderChannels = channelsSort.map(({ id, name, removable }) => {
-    const btnColor = parseInt(currentChannelID) === parseInt(id) ? 'primary' : 'light';
-    const removableBtnCN = "nav-link text-left flex-grow-1 btn-" + btnColor;
-    const defaultBtnCN = "nav-link btn-block mb-2 text-left btn btn-" + btnColor;
-    if (!removable) {
-      return (
-        <li key={_.uniqueId(name)} className="nav-item">
-          <button className={defaultBtnCN} onClick={() => dispatch(changeChannel({ id: id }))}>{name}</button>
-        </li>
-      );
-    }
-    return (
-      <li key={_.uniqueId(name)} className="nav-item">
-        <ButtonGroup className="d-flex dropdown mb-2">
-          <Button className={removableBtnCN} onClick={() => dispatch(changeChannel({ id: id }))}>{name}</Button>
-          <DropdownButton as={ButtonGroup} title="" id="bg-nested-dropdown" variant={btnColor}>
-            <Dropdown.Item eventKey="1" onClick={handleClick(id)}>Change Name</Dropdown.Item>
-            <Dropdown.Item eventKey="2" onClick={() => dispatch(handleRemoveChannel(id))}>Delete Chanel</Dropdown.Item>
-          </DropdownButton>
-        </ButtonGroup>
-      </li>
-    );
-    });
+  const renderChannels = channelsSort
+    .map(({ id, name, removable }) => <ChannelBtn
+      key={_.uniqueId(id + name)}
+      id={id}
+      name={name}
+      removable={removable}
+      currentChannelID={currentChannelID}
+      handleChangeChannel={handleChangeChannel}
+      handleRemoveChannel={handleRemoveChannel}
+      handleChangeChannelName={handleChangeChannelName}
+    />);
+    
 
   return (
     <>

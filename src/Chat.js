@@ -4,7 +4,7 @@ import axios from 'axios';
 import routes from './routes';
 import _ from 'lodash';
 import Rollbar from 'rollbar';
-import { UserName } from './index';
+import UserName from './UserNameContext';
 import { change, newMessage, sending, failed, successful } from './slices/messagesSlice';
 
 const Chat = ({ socket }) => {
