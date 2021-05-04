@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { Button, ButtonGroup, DropdownButton, Dropdown } from 'react-bootstrap';
 import _ from 'lodash';
 import { useSelector, useDispatch } from 'react-redux';
-import CustomModal from './Modal';
-import { changeChannel } from './slices/channelsSlice';
-import { newChannel, renameChannel, removeChannel, newChannelSocket, renameChannelSocket, removeChannelSocket } from './slices/channelsSlice';
+
+import CustomModal from './Modal.js';
+import { changeChannel } from './slices/channelsSlice.js';
+import { newChannel, renameChannel, removeChannel } from './slices/channelsSlice.js';
 
 const ChannelBtn = ({ id, name, currentChannelID, removable, handleChangeChannel, handleRemoveChannel, handleChangeChannelName}) => {
   const btnColor = parseInt(currentChannelID) === parseInt(id) ? 'primary' : 'light';
@@ -42,33 +44,31 @@ const Channels = ({ socket }) => {
   const state = useSelector((state) => state.channels.state);
 
   useEffect(() => {
-    socket.on('newChannel', (data) => dispatch(newChannelSocket(data)));
-    socket.on('renameChannel', (data) => dispatch(renameChannelSocket(data)));
-    socket.on('removeChannel', (data) => dispatch(removeChannelSocket(data)));
+    socket.on('newChannel', (data) => dispatch(newChannel(data)));
+    socket.on('renameChannel', (data) => dispatch(renameChannel(data)));
+    socket.on('removeChannel', (data) => dispatch(removeChannel(data)));
   }, []);
 
   const handleSubmitNewChannel = (channelName) => {
     if (channelName) {
-      dispatch(newChannel(channelName));
+      socket.emit('newChannel', { name: channelName }, (res) => console.log(res));
     }
   };
 
-  const handleSubmitRenameChannel = (id) => (channelName) => {
-    console.log('handleSubmitRenameChannel', id, channelName)
-    if (channelName) {
-      console.log('handleName', channelName)
-      dispatch(renameChannel({id, channelName}));
+  const handleSubmitRenameChannel = (id) => (name) => {
+    if (name) {
+      socket.emit('renameChannel', { id, name }, (res) => {console.log('channelRename', res)});
     }
   };
 
-  const handleChangeChannelName = (id) => (e) => {
+  const handleChangeChannelName = (id) => () => {
     setCurrentID(id);
     setCurrentModal('renameChannel');
     setShowModal(true);
   };
 
-  const handleChangeChannel = (id) => (e) => dispatch(changeChannel({ id: id }));
-  const handleRemoveChannel = (id) => (e) => dispatch(removeChannel(id));
+  const handleChangeChannel = (id) => () => dispatch(changeChannel({ id: id }));
+  const handleRemoveChannel = (id) => () => socket.emit('removeChannel', { id }, () => {});
 
   const modal = {
     renameChannel: {
@@ -110,9 +110,32 @@ const Channels = ({ socket }) => {
         {renderChannels}
       </ul>
     </div>
-    {showModal ? <CustomModal setShowModal={setShowModal} showModal={showModal} state={modal[currentModal].state} handleSubmit={modal[currentModal].handleSubmit}/> : ''}
+    {
+      showModal
+        ? <CustomModal
+            setShowModal={setShowModal}
+            showModal={showModal}
+            state={modal[currentModal].state}
+            handleSubmit={modal[currentModal].handleSubmit}
+          />
+        : ''
+    }
     </>
   );
 };
 
 export default Channels;
+
+ChannelBtn.propTypes = {
+  id: PropTypes.string,
+  name: PropTypes.name,
+  currentChannelID: PropTypes.currentChannelID,
+  removable: PropTypes.bool,
+  handleChangeChannel: PropTypes.func,
+  handleRemoveChannel: PropTypes.func,
+  handleChangeChannelName: PropTypes.func,
+};
+
+Channels.propTypes = {
+  socket: PropTypes.object,
+};

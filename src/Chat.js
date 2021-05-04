@@ -1,54 +1,44 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import axios from 'axios';
-import routes from './routes';
 import _ from 'lodash';
-import Rollbar from 'rollbar';
-import UserName from './UserNameContext';
-import { change, newMessage, sending, failed, successful } from './slices/messagesSlice';
+import PropTypes from 'prop-types';
+import { changeMessage, newMessage } from './slices/messagesSlice.js';
 
-const Chat = ({ socket }) => {
-  const [rollbar, setNewRollbar] = useState(new Rollbar({
-    accessToken: '1be20a201adb442f96b443578df0a781',
-    captureUncaught: true,
-    captureUnhandledRejections: true,
-  }));
+const Chat = ({ socket, userName }) => {
   const dispatch = useDispatch();
 
-  const userName = useContext(UserName);
+  //const userName = useContext(authContext);
+  console.log('username', userName)
 
   const currentChannelID = useSelector((state) => state.channels.currentChannelID);
-  console.log(currentChannelID)
-  const messages = useSelector((state) => state.message.messages);
+  console.log('currentChannelID', currentChannelID)
+  const messages = useSelector((state) => {console.log('stats', state); return state.message.messages});
   const message = useSelector((state) => state.message.value);
   const state = useSelector((state) => state.message.state);
 
+  console.log('messages', messages)
+
   useEffect(() => {
-    socket.on('newMessage', (data) => dispatch(newMessage(data)));
+    socket.on('newMessage', (data) =>  dispatch(newMessage(data)));
   }, []);
 
-  const handleSubmit = (id, message, user) => {
-    return async dispatch => {
-      dispatch(sending());
-      try {
-        await axios.post(routes.channelMessagesPath(id), { data: {
-          attributes: {
-            value: message,
-            user: user,
-          }
-        }});
-        dispatch(successful());
-      } catch (error) {
-        rollbar.info(error)
-        dispatch(failed({ error: error.message }));
-      }
-    }
+  const handleChangeMessage = (e) => dispatch(changeMessage(e.target.value));
+
+  const handleSubmit = (channelId, message, user) => (e) => {
+    e.preventDefault();
+    socket.emit('newMessage', { channelId, message, user }, () => {
+        console.log('Message sended');
+    });
   };
 
+
   const currentMessage = messages.filter(({ channelId }) => parseInt(channelId) === parseInt(currentChannelID));
-  const renderMessages = currentMessage.map(({ value, user }) => <div key={_.uniqueId(value)} className="text-break">
-    <b>{user}</b>: {value}
+  const renderMessages = currentMessage.map(({ id, message, user }) => <div key={_.uniqueId(id)} className="text-break">
+    <b>{user}</b>: {message}
   </div>);
+
+  console.log('currentMessage', currentMessage);
+  console.log('renderMessages', renderMessages);
 
   const renderBtn = () => {
     if (state === 'sending') {
@@ -64,13 +54,10 @@ const Chat = ({ socket }) => {
           {renderMessages}
         </div>
         <div className="mt-auto">
-          <form noValidate onSubmit={(e) => {
-              e.preventDefault();
-              dispatch(handleSubmit(currentChannelID, message, userName));
-            }}>
+          <form noValidate onSubmit={handleSubmit(currentChannelID, message, userName)}>
             <div className="from-group">
               <div className="input-group">
-                <input name="body" aria-label="body" className="mr-2 form-control" autoFocus={true} value={message} onChange={(e) => dispatch(change(e.target.value))} />
+                <input name="body" aria-label="body" className="mr-2 form-control" autoFocus={true} value={message} onChange={handleChangeMessage} />
                 {renderBtn()}
                 <div className="d-block invalid-feedback">&nbsp;</div>
               </div>
@@ -83,3 +70,8 @@ const Chat = ({ socket }) => {
 };
 
 export default Chat;
+
+Chat.propTypes = {
+  socket: PropTypes.object,
+  userName: PropTypes.string,
+};

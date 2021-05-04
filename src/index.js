@@ -1,20 +1,14 @@
 // @ts-check
 
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
+import 'core-js/stable/index.js';
+import 'regenerator-runtime/runtime.js';
 import '../assets/application.scss';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import store from './store/store';
-import gon from 'gon';
-import faker from 'faker';
-import Cookies from 'js-cookie';
 
-import App from './App';
-import socket from './socket';
-import UserName from './UserNameContext';
+import App from './App.js';
+import socket from './socket.js';
 
 if (process.env.NODE_ENV !== 'production') {
   localStorage.debug = 'chat:*';
@@ -39,19 +33,9 @@ card.append(cardBody);
 const container = document.querySelector('#chat');
 
 console.log('it works!');
-console.log('gon', gon);
-
-const initialState = { ...gon };
 const sock = socket();
 
-const userNameCookies = Cookies.get('userName');
-const userName = userNameCookies || Cookies.set('userName', faker.name.findName());
-
 ReactDOM.render(
-  <Provider store={store}>
-    <UserName.Provider value={userName}>
-      <App state={initialState} socket={sock} />
-    </UserName.Provider>
-  </Provider>,
+  <App socket={sock} />,
   container,
 );

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 
 const CustomModal = ({ setShowModal, showModal, state, handleSubmit }) => {
   console.log('showModal', showModal)
@@ -39,3 +40,10 @@ const CustomModal = ({ setShowModal, showModal, state, handleSubmit }) => {
 };
 
 export default CustomModal;
+
+CustomModal.propTypes = {
+  setShowModal: PropTypes.func,
+  showModal: PropTypes.bool,
+  state: PropTypes.object,
+  handleSubmit: PropTypes.func,
+};

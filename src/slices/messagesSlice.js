@@ -1,42 +1,40 @@
 import { createSlice } from '@reduxjs/toolkit';
-import gon from 'gon';
-import { removeChannel } from './channelsSlice';
+import { setData, removeChannel, changeChannel } from './channelsSlice.js';
 
 export const messagesSlice = createSlice({
   name: 'messages',
   initialState: {
     value: '',
-    messages: gon.messages,
+    messages: [],
     state: '',
   },
   reducers: {
-    change: (state, action) => {
+    changeMessage: (state, action) => {
       console.log(state)
       state.value = action.payload;
     },
     newMessage: (state, action) => {
-      const message = action.payload.data.attributes;
+      console.log('action', action)
+      const message = action.payload;
+      state.value = '';
       state.messages.push(message);
     },
-    sending: (state, action) => {
-      state.state = 'sending';
-    },
-    failed: (state, action) => {
-      state.state = 'failed';
-    },
-    successful: (state, action) => {
-      state.value = '';
-      state.state = 'successful';
-    }
   },
   extraReducers: {
+    [setData](state, action) {
+      console.log('Message new channel', action);
+      state.messages = action.payload.messages;
+    },
+    [changeChannel](state) {
+      state.value = '';
+    },
     [removeChannel](state, action) {
       console.log('remove message', action.payload)
-      const id = action.payload.data.id;
+      const id = action.payload.id;
       state.messages = state.messages.filter(({ channelId }) => parseInt(channelId) !== parseInt(id));
     },
   },
 });
 
-export const { change, newMessage, sending, failed, successful } = messagesSlice.actions;
+export const { changeMessage, newMessage, sending, failed, successful } = messagesSlice.actions;
 export default messagesSlice.reducer;
