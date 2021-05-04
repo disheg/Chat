@@ -28,7 +28,7 @@ const card = document.createElement('div');
 card.classList.add('card', 'text-center');
 card.append(cardBody);
 
-const app = init(socket);
+const app = init(socket());
 
 const container = document.querySelector('#chat');
 
