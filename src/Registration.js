@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -39,15 +40,15 @@ return (
     }}
     validationSchema={yup.object().shape({
       username: yup.string()
-        .required("Required")
-        .min(3, 'min 3')
-        .max(20, 'max 20'),
+        .required("Обязательное поле")
+        .min(3, 'От 3 до 20 символов')
+        .max(20, 'От 3 до 20 символов'),
       password: yup.string()
         .required("No password provided.")
-        .min(4, "Password is too short - should be 4 chars minimum."),
+        .min(6, "Не менее 6 символов"),
       confirmPassword: yup.string()
-        .required("required")
-        .oneOf([yup.ref('password'), null], 'Passwords must match')
+        .required("")
+        .oneOf([yup.ref('password'), null], 'Пароли должны совпадать')
     })}
   >
     {props => {

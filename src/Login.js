@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useEffect, useState, useContext } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -6,7 +7,19 @@ import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import authContext from './contexts/index.js';
 
-const ValidatedLoginForm = ({ auth, loginError, setLoginError }) => (
+const ValidatedLoginForm = ({ auth }) => {
+  const [loginError, setLoginError] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  if (loginError) {
+    console.log(loginError.response.data)
+    const statusCode = loginError.response.data.statusCode;
+    if (statusCode === 401) {
+      setErrorMessage('Неверные имя пользователя или пароль');
+      setLoginError('');
+    }
+  }
+  console.log('Error Message', errorMessage)
+  return (
   <Formik
     initialValues={{ username: "", password: "" }}
     onSubmit={(values, { setSubmitting }) => {
@@ -17,7 +30,7 @@ const ValidatedLoginForm = ({ auth, loginError, setLoginError }) => (
       })
       .catch((err) => {
         console.log('err', err)
-        setLoginError(err.response.data.message || err.message);
+        setLoginError(err);
         setSubmitting(false);
       })
     }}
@@ -44,7 +57,7 @@ const ValidatedLoginForm = ({ auth, loginError, setLoginError }) => (
       return (
         <form className="p-3" onSubmit={handleSubmit}>
           <div className="form-group">
-          <label className="form-label" htmlFor="username">User Name</label>
+          <label className="form-label" htmlFor="username">Ваш ник</label>
           <input
             name="username"
             type="text"
@@ -52,12 +65,12 @@ const ValidatedLoginForm = ({ auth, loginError, setLoginError }) => (
             value={values.username}
             onChange={handleChange}
             onBlur={handleBlur}
-            className={`form-control ${(loginError || (errors.password && touched.password)) && "is-invalid"}`}
+            className={`form-control ${(errorMessage || (errors.password && touched.password)) && "is-invalid"}`}
           />
           {errors.username && touched.username && (
             <div className="invalid-feedback">{errors.username}</div>
           )}
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password">Пароль</label>
           <input
             name="password"
             type="password"
@@ -65,10 +78,10 @@ const ValidatedLoginForm = ({ auth, loginError, setLoginError }) => (
             value={values.password}
             onChange={handleChange}
             onBlur={handleBlur}
-            className={`form-control ${(loginError || (errors.password && touched.password)) && "is-invalid"}`}
+            className={`form-control ${(errorMessage || (errors.password && touched.password)) && "is-invalid"}`}
           />
-          {(loginError || (errors.password && touched.password)) && (
-            <div className="invalid-feedback">{errors.password || loginError}</div>
+          {(errorMessage || (errors.password && touched.password)) && (
+            <div className="invalid-feedback">{errors.password || errorMessage}</div>
           )}
           <button type="submit" className="w-100 mb-3 btn btn-outline-primary" disabled={isSubmitting}>
                   Войти
@@ -82,7 +95,7 @@ const ValidatedLoginForm = ({ auth, loginError, setLoginError }) => (
       );
     }}
   </Formik>
-);
+)};
 
 const Login = () => {
   const auth = useContext(authContext);
@@ -94,12 +107,6 @@ const Login = () => {
     }
   });
 
-  const [loginError, setLoginError] = useState('');
-
-  if (loginError) {
-    console.log('ERROR', loginError); //TODO
-  }
-
   if (auth.loggedIn) {
     return <Redirect to="/" /> //TODO
   }
@@ -109,7 +116,7 @@ const Login = () => {
       <div className="container-fluid">
         <div className="row justify-content-center pt-5">
           <div className="col-sm-4">
-            <ValidatedLoginForm auth={auth} loginError={loginError} setLoginError={setLoginError} />
+            <ValidatedLoginForm auth={auth} />
           </div>
         </div>
       </div>
@@ -117,3 +124,10 @@ const Login = () => {
 };
 
 export default Login;
+
+ValidatedLoginForm.propTypes = {
+  auth: PropTypes.object,
+  loginError: PropTypes.string,
+  setLoginError: PropTypes.func,
+};
+
