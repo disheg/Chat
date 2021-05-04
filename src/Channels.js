@@ -127,9 +127,9 @@ const Channels = ({ socket }) => {
 export default Channels;
 
 ChannelBtn.propTypes = {
-  id: PropTypes.string,
-  name: PropTypes.name,
-  currentChannelID: PropTypes.currentChannelID,
+  id: PropTypes.number,
+  name: PropTypes.string,
+  currentChannelID: PropTypes.number,
   removable: PropTypes.bool,
   handleChangeChannel: PropTypes.func,
   handleRemoveChannel: PropTypes.func,
