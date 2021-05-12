@@ -65,7 +65,7 @@ const ValidatedLoginForm = ({ auth }) => {
                 className={`form-control ${(errorMessage || (errors.username && touched.username)) && 'is-invalid'}`}
               />
               {(errorMessage || (errors.username && touched.username)) && (
-                <div className="invalid-feedback">{errors.username || errorMessage}</div>
+                <div className="invalid-feedback">{errors.username}</div>
               )}
             </div>
             <div className="form-group">
