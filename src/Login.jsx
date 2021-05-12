@@ -8,25 +8,11 @@ import PropTypes from 'prop-types';
 import authContext from './contexts/index.js';
 
 const ValidatedLoginForm = ({ auth }) => {
-  const [loginError, setLoginError] = useState('');
+  const [isAuthFailed, setIsAuthFailed] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  if (loginError) {
-    console.log('Login Error', loginError);
-    if (loginError.response) {
-      const { statusCode } = loginError.response.data;
-      if (statusCode === 401) {
-        setErrorMessage('Неверные имя пользователя или пароль');
-        setLoginError('');
-      }
-    } else if (loginError.request) {
-      console.log('loginError.request', loginError.request);
-      console.log('loginError.request.response', loginError.request.response);
-      const { statusCode } = loginError.request.response;
-      if (statusCode === 401) {
-        setErrorMessage('Неверные имя пользователя или пароль');
-        setLoginError('');
-      }
-    }
+  if (isAuthFailed) {
+    setErrorMessage('Неверные имя пользователя или пароль');
+    setIsAuthFailed('');
   }
   console.log('Error Message', errorMessage);
   return (
@@ -40,7 +26,10 @@ const ValidatedLoginForm = ({ auth }) => {
           })
           .catch((err) => {
             console.log('err', err);
-            setLoginError(err);
+            if (!err.isAxiosError || err.response.status !== 401) {
+              throw new Error(err);
+            }
+            setIsAuthFailed(true);
             setSubmitting(false);
           });
       }}
