@@ -1,4 +1,4 @@
-export const getAuthHeader = () => {
+export default () => {
   const userId = JSON.parse(localStorage.getItem('userId'));
 
   if (userId && userId.token) {

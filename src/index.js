@@ -4,9 +4,9 @@ import 'core-js/stable/index.js';
 import 'regenerator-runtime/runtime.js';
 import '../assets/application.scss';
 
-import socket from './socket.js';
 import ReactDOM from 'react-dom';
-import init from '../index.js';
+import socket from './socket.js';
+import init from '../index.jsx';
 
 if (process.env.NODE_ENV !== 'production') {
   localStorage.debug = 'chat:*';

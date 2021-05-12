@@ -10,11 +10,11 @@ export const messagesSlice = createSlice({
   },
   reducers: {
     changeMessage: (state, action) => {
-      console.log(state)
+      console.log(state);
       state.value = action.payload;
     },
     newMessage: (state, action) => {
-      console.log('action', action)
+      console.log('action', action);
       const message = action.payload;
       state.value = '';
       state.messages.push(message);
@@ -29,12 +29,19 @@ export const messagesSlice = createSlice({
       state.value = '';
     },
     [removeChannel](state, action) {
-      console.log('remove message', action.payload)
-      const id = action.payload.id;
-      state.messages = state.messages.filter(({ channelId }) => parseInt(channelId) !== parseInt(id));
+      console.log('remove message', action.payload);
+      const { id } = action.payload;
+      state.messages = state.messages
+        .filter(({ channelId }) => parseInt(channelId, 10) !== parseInt(id, 10));
     },
   },
 });
 
-export const { changeMessage, newMessage, sending, failed, successful } = messagesSlice.actions;
+export const {
+  changeMessage,
+  newMessage,
+  sending,
+  failed,
+  successful,
+} = messagesSlice.actions;
 export default messagesSlice.reducer;

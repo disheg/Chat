@@ -7,19 +7,18 @@ import { changeMessage, newMessage } from './slices/messagesSlice.js';
 const Chat = ({ socket, userName }) => {
   const dispatch = useDispatch();
 
-  //const userName = useContext(authContext);
-  console.log('username', userName)
+  console.log('username', userName);
 
   const currentChannelID = useSelector((state) => state.channels.currentChannelID);
-  console.log('currentChannelID', currentChannelID)
-  const messages = useSelector((state) => {console.log('stats', state); return state.message.messages});
+  console.log('currentChannelID', currentChannelID);
+  const messages = useSelector((state) => { console.log('stats', state); return state.message.messages; });
   const message = useSelector((state) => state.message.value);
-  const state = useSelector((state) => state.message.state);
+  const messageState = useSelector((state) => state.message.state);
 
-  console.log('messages', messages)
+  console.log('messages', messages);
 
   useEffect(() => {
-    socket.on('newMessage', (data) =>  dispatch(newMessage(data)));
+    socket.on('newMessage', (data) => dispatch(newMessage(data)));
   }, []);
 
   const handleChangeMessage = (e) => dispatch(changeMessage(e.target.value));
@@ -27,24 +26,29 @@ const Chat = ({ socket, userName }) => {
   const handleSubmit = (channelId, message, user) => (e) => {
     e.preventDefault();
     socket.emit('newMessage', { channelId, message, user }, () => {
-        console.log('Message sended');
+      console.log('Message sended');
     });
   };
 
-
-  const currentMessage = messages.filter(({ channelId }) => parseInt(channelId) === parseInt(currentChannelID));
-  const renderMessages = currentMessage.map(({ id, message, user }) => <div key={_.uniqueId(id)} className="text-break">
-    <b>{user}</b>: {message}
-  </div>);
+  const currentMessage = messages.filter(
+    ({ channelId }) => parseInt(channelId, 10) === parseInt(currentChannelID, 10),
+  );
+  const renderMessages = currentMessage.map(({ id, message, user }) => (
+    <div key={_.uniqueId(id)} className="text-break">
+      <b>{user}</b>
+      :
+      {message}
+    </div>
+  ));
 
   console.log('currentMessage', currentMessage);
   console.log('renderMessages', renderMessages);
 
   const renderBtn = () => {
-    if (state === 'sending') {
-      return <button aria-label="submit" type="submit" className="btn btn-primary" disabled >Submit</button>;
+    if (messageState === 'sending') {
+      return <button aria-label="submit" type="submit" className="btn btn-primary" disabled>Submit</button>;
     }
-    return <button aria-label="submit" type="submit" className="btn btn-primary" >Submit</button>;
+    return <button aria-label="submit" type="submit" className="btn btn-primary">Submit</button>;
   };
 
   return (
