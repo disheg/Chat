@@ -8,19 +8,19 @@ import { Redirect } from 'react-router-dom';
 import useAuth from './hooks/index.js';
 
 const ValidatedRegistrationForm = ({ auth }) => {
-  const [loginError, setLoginError] = useState('');
-  const [regError, setRegError] = useState('');
-  console.log(loginError);
+  const [msgError, setMsgError] = useState('');
+  const [regError, setRegError] = useState(null);
+  console.log(regError);
   if (auth.loggedIn) {
     return <Redirect to="/" />;
   }
-  if (loginError) {
+  if (regError) {
     // err.response.data.message || err.message
-    console.log(loginError.response.data);
-    const { statusCode } = loginError.response.data.statusCode;
+    console.log(regError.response.data);
+    const { statusCode } = regError.response.data.statusCode;
     if (statusCode === 409) {
-      setRegError('User is already');
-      setLoginError('');
+      setMsgError('User is already');
+      setRegError(null);
     }
   }
   return (
@@ -35,7 +35,7 @@ const ValidatedRegistrationForm = ({ auth }) => {
           })
           .catch((err) => {
             console.log('err', err);
-            setLoginError(err);
+            setRegError(err);
             setSubmitting(false);
           });
       }}
@@ -45,10 +45,10 @@ const ValidatedRegistrationForm = ({ auth }) => {
           .min(3, 'От 3 до 20 символов')
           .max(20, 'От 3 до 20 символов'),
         password: yup.string()
-          .required('No password provided.')
+          .required('Обязательное поле.')
           .min(6, 'Не менее 6 символов'),
         confirmPassword: yup.string()
-          .required('')
+          .required('Пароли должны совпадать')
           .oneOf([yup.ref('password'), null], 'Пароли должны совпадать'),
       })}
     >
@@ -62,51 +62,52 @@ const ValidatedRegistrationForm = ({ auth }) => {
           handleBlur,
           handleSubmit,
         } = props;
+        console.log(errors)
         return (
           <form className="p-3" onSubmit={handleSubmit}>
             <div className="form-group">
-              <label className="form-label" htmlFor="username">User Name</label>
+              <label className="form-label" htmlFor="username">Имя пользователя</label>
               <input
                 name="username"
                 type="text"
-                placeholder="Enter your username"
+                placeholder="От 3 до 20 символов"
                 value={values.username}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={`form-control ${(regError || (errors.password && touched.password)) && 'is-invalid'}`}
+                className={`form-control ${(msgError || (errors.password && touched.password)) && 'is-invalid'}`}
               />
               {errors.username && touched.username && (
                 <div className="invalid-feedback">{errors.username}</div>
               )}
             </div>
             <div className="form-group">
-              <label className="form-label" htmlFor="password">Password</label>
+              <label className="form-label" htmlFor="password">Пароль</label>
               <input
                 name="password"
                 type="password"
-                placeholder="Enter your password"
+                placeholder="Не менее 6 символов"
                 value={values.password}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={`form-control ${(regError || (errors.password && touched.password)) && 'is-invalid'}`}
+                className={`form-control ${(msgError || (errors.password && touched.password)) && 'is-invalid'}`}
               />
-              {(loginError || (errors.password && touched.password)) && (
-                <div className="invalid-feedback">{errors.password || loginError}</div>
+              {(msgError || (errors.password && touched.password)) && (
+                <div className="invalid-feedback">{errors.password}</div>
               )}
             </div>
             <div className="form-group">
-              <label className="form-label" htmlFor="confirmPassword">Confirm Password</label>
+              <label className="form-label" htmlFor="confirmPassword">Подтвердите пароль</label>
               <input
                 name="confirmPassword"
                 type="password"
-                placeholder="Confirm your password"
+                placeholder="Пароли должны совпадать"
                 value={values.confirmPassword}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={`form-control ${(regError || (errors.confirmPassword && touched.confirmPassword)) && 'is-invalid'}`}
+                className={`form-control ${(msgError || (errors.confirmPassword && touched.confirmPassword)) && 'is-invalid'}`}
               />
-              {(regError || (errors.confirmPassword && touched.confirmPassword)) && (
-                <div className="invalid-feedback">{errors.confirmPassword || regError}</div>
+              {(msgError || (errors.confirmPassword && touched.confirmPassword)) && (
+                <div className="invalid-feedback">{errors.confirmPassword || msgError}</div>
               )}
             </div>
             <button type="submit" className="w-100 mb-3 btn btn-outline-primary" disabled={isSubmitting}>

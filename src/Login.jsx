@@ -3,7 +3,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import authContext from './contexts/index.js';
 
@@ -89,7 +89,7 @@ const ValidatedLoginForm = ({ auth }) => {
             </button>
             <div className="d-flex flex-column align-items-center">
               <span className="small mb-2">Нет аккаунта?</span>
-              <a href="/signup">Регистрация</a>
+              <Link to="/signup">Регистрация</Link>
             </div>
           </form>
         );
