@@ -70,6 +70,8 @@ const ValidatedLoginForm = ({ auth }) => {
               {errors.username && touched.username && (
                 <div className="invalid-feedback">{errors.username}</div>
               )}
+            </div>
+            <div className="form-group">
               <label htmlFor="password">Пароль</label>
               <input
                 name="password"
@@ -83,6 +85,7 @@ const ValidatedLoginForm = ({ auth }) => {
               {(errorMessage || (errors.password && touched.password)) && (
                 <div className="invalid-feedback">{errors.password || errorMessage}</div>
               )}
+            </div>
               <button type="submit" className="w-100 mb-3 btn btn-outline-primary" disabled={isSubmitting}>
                 Войти
               </button>
@@ -90,7 +93,6 @@ const ValidatedLoginForm = ({ auth }) => {
                 <span className="small mb-2">Нет аккаунта?</span>
                 <a href="/signup">Регистрация</a>
               </div>
-            </div>
           </form>
         );
       }}
