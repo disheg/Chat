@@ -11,7 +11,7 @@ const ValidatedLoginForm = ({ auth }) => {
   const [loginError, setLoginError] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   if (loginError) {
-    console.log(loginError.response.data);
+    console.log('Login Error', loginError);
     const { statusCode } = loginError.response.data;
     if (statusCode === 401) {
       setErrorMessage('Неверные имя пользователя или пароль');
@@ -66,14 +66,14 @@ const ValidatedLoginForm = ({ auth }) => {
                 value={values.username}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={`form-control ${(errorMessage || (errors.password && touched.password)) && 'is-invalid'}`}
+                className={`form-control ${(errorMessage || (errors.username && touched.username)) && 'is-invalid'}`}
               />
-              {errors.username && touched.username && (
-                <div className="invalid-feedback">{errors.username}</div>
+              {(errorMessage || (errors.username && touched.username)) && (
+                <div className="invalid-feedback">{errors.username || errorMessage}</div>
               )}
             </div>
             <div className="form-group">
-              <label htmlFor="password">Пароль</label>
+              <label className="form-label" htmlFor="password">Пароль</label>
               <input
                 name="password"
                 type="password"
@@ -88,13 +88,13 @@ const ValidatedLoginForm = ({ auth }) => {
                 <div className="invalid-feedback">{errors.password || errorMessage}</div>
               )}
             </div>
-              <button type="submit" className="w-100 mb-3 btn btn-outline-primary" disabled={isSubmitting}>
-                Войти
-              </button>
-              <div className="d-flex flex-column align-items-center">
-                <span className="small mb-2">Нет аккаунта?</span>
-                <a href="/signup">Регистрация</a>
-              </div>
+            <button type="submit" className="w-100 mb-3 btn btn-outline-primary" disabled={isSubmitting}>
+              Войти
+            </button>
+            <div className="d-flex flex-column align-items-center">
+              <span className="small mb-2">Нет аккаунта?</span>
+              <a href="/signup">Регистрация</a>
+            </div>
           </form>
         );
       }}
