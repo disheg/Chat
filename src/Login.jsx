@@ -12,10 +12,18 @@ const ValidatedLoginForm = ({ auth }) => {
   const [errorMessage, setErrorMessage] = useState('');
   if (loginError) {
     console.log('Login Error', loginError);
-    const { statusCode } = loginError.response.data;
-    if (statusCode === 401) {
-      setErrorMessage('Неверные имя пользователя или пароль');
-      setLoginError('');
+    if (loginError.response) {
+      const { statusCode } = loginError.response.data;
+      if (statusCode === 401) {
+        setErrorMessage('Неверные имя пользователя или пароль');
+        setLoginError('');
+      }
+    } else if (loginError.request) {
+      const { statusCode } = JSON.parse(loginError.request.response);
+      if (statusCode === 401) {
+        setErrorMessage('Неверные имя пользователя или пароль');
+        setLoginError('');
+      }
     }
   }
   console.log('Error Message', errorMessage);
