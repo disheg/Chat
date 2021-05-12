@@ -61,6 +61,7 @@ const ValidatedLoginForm = ({ auth }) => {
               <input
                 name="username"
                 type="text"
+                id="username"
                 placeholder="Enter your username"
                 value={values.username}
                 onChange={handleChange}
@@ -76,6 +77,7 @@ const ValidatedLoginForm = ({ auth }) => {
               <input
                 name="password"
                 type="password"
+                id="password"
                 placeholder="Enter your password"
                 value={values.password}
                 onChange={handleChange}
