@@ -70,6 +70,7 @@ const ValidatedRegistrationForm = ({ auth }) => {
               <input
                 name="username"
                 type="text"
+                id="username"
                 placeholder="От 3 до 20 символов"
                 value={values.username}
                 onChange={handleChange}
@@ -85,6 +86,7 @@ const ValidatedRegistrationForm = ({ auth }) => {
               <input
                 name="password"
                 type="password"
+                id="password"
                 placeholder="Не менее 6 символов"
                 value={values.password}
                 onChange={handleChange}
@@ -100,6 +102,7 @@ const ValidatedRegistrationForm = ({ auth }) => {
               <input
                 name="confirmPassword"
                 type="password"
+                id="confirmPassword"
                 placeholder="Пароли должны совпадать"
                 value={values.confirmPassword}
                 onChange={handleChange}
