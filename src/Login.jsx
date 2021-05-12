@@ -19,6 +19,8 @@ const ValidatedLoginForm = ({ auth }) => {
         setLoginError('');
       }
     } else if (loginError.request) {
+      console.log('loginError.request', loginError.request);
+      console.log('loginError.request.response', loginError.request.response);
       const { statusCode } = loginError.request.response;
       if (statusCode === 401) {
         setErrorMessage('Неверные имя пользователя или пароль');
