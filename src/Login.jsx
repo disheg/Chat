@@ -26,9 +26,6 @@ const ValidatedLoginForm = ({ auth }) => {
           })
           .catch((err) => {
             console.log('err', err);
-            if (!err.isAxiosError || err.response.status !== 401) {
-              throw new Error(err);
-            }
             setIsAuthFailed(true);
             setSubmitting(false);
           });
