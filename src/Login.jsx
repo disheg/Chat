@@ -21,10 +21,13 @@ const ValidatedLoginForm = ({ auth }) => {
       onSubmit={(values, { setSubmitting }) => {
         axios.post('/api/v1/login', values)
           .then((data) => {
+            console.log('User Log In DATA', data);
             localStorage.setItem('userId', JSON.stringify(data.data));
             auth.logIn();
+            console.log('User Logg In')
           })
           .catch((err) => {
+            console.log('User Log In FAILED');
             console.log('err', err);
             setIsAuthFailed(true);
             setSubmitting(false);

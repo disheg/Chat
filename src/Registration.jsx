@@ -29,11 +29,12 @@ const ValidatedRegistrationForm = ({ auth }) => {
       onSubmit={({ username, password }, { setSubmitting }) => {
         axios.post('/api/v1/signup', { username, password })
           .then((response) => {
-            console.log(response);
+            console.log('User Log In DATA', response.data);
             localStorage.setItem('userId', JSON.stringify(response.data));
             auth.logIn();
           })
           .catch((err) => {
+            console.log('User Log In FAILED');
             console.log('err', err);
             setRegError(err);
             setSubmitting(false);
