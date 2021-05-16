@@ -20,29 +20,11 @@ import getAuthHeader from './utils.js';
 import { setData } from './slices/channelsSlice.js';
 import Registration from './Registration.jsx';
 
-const PrivateRoute = ({ socket, path }) => {
-  const auth = useAuth();
-  const userId = JSON.parse(localStorage.getItem('userId'));
-  useEffect(() => {
-    if (userId && userId.token) {
-      auth.logIn();
-    }
-  });
-  console.log('PrivateRoute', 'auth', auth);
-  return (
-    <Route
-      path={path}
-      render={({ location }) => (userId
-        ? <HomePage socket={socket} userId={userId} />
-        : <Redirect to={{ pathname: '/login', state: { from: location } }} />)}
-    />
-  );
-};
-
-const HomePage = ({ socket, userId }) => {
+const HomePage = ({ socket }) => {
   console.log('Path HomePage', window.location.href);
   const dispatch = useDispatch();
   const isDataLoaded = useSelector((state) => state.channels.isDataLoaded);
+  const userId = JSON.parse(localStorage.getItem('userId'));
   useEffect(() => {
     axios.get('/api/v1/data', { headers: getAuthHeader() })
       .then((data) => {
@@ -62,29 +44,43 @@ const HomePage = ({ socket, userId }) => {
   );
 };
 
-const App = ({ socket }) => (
-  <>
-    <Provider store={store}>
-      <AuthProvider>
-        <Header />
-        <Router>
-          <Switch>
-            <Route path="/login">
-              <Login />
-            </Route>
-            <Route path="/signup">
-              <Registration />
-            </Route>
-            <PrivateRoute path="/" socket={socket} />
-            <Route path="*">
-              <div>404 ERROR</div>
-            </Route>
-          </Switch>
-        </Router>
-      </AuthProvider>
-    </Provider>
-  </>
-);
+const Body = ({ socket }) => {
+  const auth = useAuth();
+  return (
+    <Router>
+            <Switch>
+              <Route exact path="/" render={({ location }) => auth.loggedIn
+                ? (
+                  <HomePage socket={socket} />
+                ) : (
+                  <Redirect to={{ pathname: '/login', state: { from: location } }} />
+                )} />
+              <Route path="/login">
+                <Login />
+              </Route>
+              <Route path="/signup">
+                <Registration />
+              </Route>
+              <Route path="*">
+                <div>404 ERROR</div>
+              </Route>
+            </Switch>
+          </Router>
+  );
+};
+
+const App = ({ socket }) => {
+  return (
+    <>
+      <Provider store={store}>
+        <AuthProvider>
+          <Header />
+          <Body socket={socket} />
+        </AuthProvider>
+      </Provider>
+    </>
+  );
+};
 
 export default App;
 
@@ -94,9 +90,4 @@ App.propTypes = {
 
 HomePage.propTypes = {
   socket: PropTypes.object,
-};
-
-PrivateRoute.propTypes = {
-  children: PropTypes.object,
-  path: PropTypes.string,
 };

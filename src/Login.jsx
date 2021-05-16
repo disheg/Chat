@@ -3,9 +3,9 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
-import { Redirect, Link, useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import authContext from './contexts/index.js';
+import useAuth from './hooks/index.js';
 
 const ValidatedLoginForm = ({ auth }) => {
   const [isAuthFailed, setIsAuthFailed] = useState(false);
@@ -106,7 +106,7 @@ const ValidatedLoginForm = ({ auth }) => {
 
 const Login = () => {
   console.log('Path', window.location.href)
-  const auth = useContext(authContext);
+  const auth = useAuth();
   const userId = JSON.parse(localStorage.getItem('userId'));
 
   useEffect(() => {
