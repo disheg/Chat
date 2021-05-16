@@ -110,7 +110,7 @@ const Login = () => {
     if (userId && userId.token) {
       auth.logIn();
     }
-  });
+  }, []);
 
   if (auth.loggedIn) {
     console.log('Redirect after Log IN')

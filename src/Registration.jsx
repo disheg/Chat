@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
@@ -11,9 +11,6 @@ const ValidatedRegistrationForm = ({ auth }) => {
   const [msgError, setMsgError] = useState('');
   const [regError, setRegError] = useState(null);
   console.log(regError);
-  if (auth.loggedIn) {
-    return <Redirect to="/" />;
-  }
   if (regError) {
     // err.response.data.message || err.message
     console.log(regError.response.data);
@@ -127,6 +124,19 @@ const ValidatedRegistrationForm = ({ auth }) => {
 const Registration = () => {
   console.log('Path', window.location.href)
   const auth = useAuth();
+  const userId = JSON.parse(localStorage.getItem('userId'));
+
+  useEffect(() => {
+    if (userId && userId.token) {
+      auth.logIn();
+    }
+  }, []);
+
+  if (auth.loggedIn) {
+    console.log('Redirect after Log IN')
+    return <Redirect to="/" />; // TODO
+  }
+
   return (
     <div className="row justify-content-center pt-5">
       <div className="col-sm-4">
