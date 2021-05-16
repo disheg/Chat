@@ -3,13 +3,14 @@ import React, { useState, useEffect } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 
 import useAuth from './hooks/index.js';
 
 const ValidatedRegistrationForm = ({ auth }) => {
   const [msgError, setMsgError] = useState('');
   const [regError, setRegError] = useState(null);
+  const history = useHistory();
   console.log(regError);
   if (regError) {
     // err.response.data.message || err.message
@@ -29,6 +30,7 @@ const ValidatedRegistrationForm = ({ auth }) => {
             console.log('User Log In DATA', response.data);
             localStorage.setItem('userId', JSON.stringify(response.data));
             auth.logIn();
+            history.replace('/');
           })
           .catch((err) => {
             console.log('User Log In FAILED');
@@ -124,18 +126,6 @@ const ValidatedRegistrationForm = ({ auth }) => {
 const Registration = () => {
   console.log('Path', window.location.href)
   const auth = useAuth();
-  const userId = JSON.parse(localStorage.getItem('userId'));
-
-  useEffect(() => {
-    if (userId && userId.token) {
-      auth.logIn();
-    }
-  }, []);
-
-  if (auth.loggedIn) {
-    console.log('Redirect after Log IN')
-    return <Redirect to="/" />; // TODO
-  }
 
   return (
     <div className="row justify-content-center pt-5">

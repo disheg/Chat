@@ -3,13 +3,14 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
-import { Redirect, Link } from 'react-router-dom';
+import { Redirect, Link, useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import authContext from './contexts/index.js';
 
 const ValidatedLoginForm = ({ auth }) => {
   const [isAuthFailed, setIsAuthFailed] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const history = useHistory();
   if (isAuthFailed) {
     setErrorMessage('Неверные имя пользователя или пароль');
     setIsAuthFailed('');
@@ -19,11 +20,13 @@ const ValidatedLoginForm = ({ auth }) => {
     <Formik
       initialValues={{ username: '', password: '' }}
       onSubmit={(values, { setSubmitting }) => {
+        
         axios.post('/api/v1/login', values)
           .then((data) => {
             console.log('User Log In DATA', data);
             localStorage.setItem('userId', JSON.stringify(data.data));
             auth.logIn();
+            history.replace('/');
             console.log('User Logg In')
           })
           .catch((err) => {
@@ -112,10 +115,7 @@ const Login = () => {
     }
   }, []);
 
-  if (auth.loggedIn) {
-    console.log('Redirect after Log IN')
-    return <Redirect to="/" />; // TODO
-  }
+
 
   console.log(auth);
   return (
