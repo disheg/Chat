@@ -8,7 +8,7 @@ import {
 import axios from 'axios';
 import PropTypes from 'prop-types';
 
-import { Provider, useDispatch } from 'react-redux';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import store from './store/store.js';
 import AuthProvider from './AuthProvider.jsx';
 import useAuth from './hooks/index.js';
@@ -41,8 +41,8 @@ const PrivateRoute = ({ children, path }) => {
 
 const HomePage = ({ socket }) => {
   const dispatch = useDispatch();
+  const isDataLoaded = useSelector((state) => state.channels.isDataLoaded);
   const userId = JSON.parse(localStorage.getItem('userId'));
-  const [isDataLoaded, setIsDataLoaded] = useState(false);
   console.log('HomePage', localStorage);
   console.log('check', userId && userId.token);
   useEffect(() => {
@@ -50,7 +50,6 @@ const HomePage = ({ socket }) => {
       .then((data) => {
         console.log('new axios ', data);
         dispatch(setData(data.data));
-        setIsDataLoaded(true);
       });
   }, []);
   if (!userId || !userId.token) {

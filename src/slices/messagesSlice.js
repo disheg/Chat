@@ -7,10 +7,10 @@ export const messagesSlice = createSlice({
     value: '',
     messages: [],
     state: '',
+    isDataLoaded: false,
   },
   reducers: {
     changeMessage: (state, action) => {
-      console.log(state);
       state.value = action.payload;
     },
     newMessage: (state, action) => {
@@ -22,8 +22,9 @@ export const messagesSlice = createSlice({
   },
   extraReducers: {
     [setData](state, action) {
-      console.log('Message new channel', action);
+      console.log('setData Message', action);
       state.messages = action.payload.messages;
+      state.isDataLoaded = true;
     },
     [changeChannel](state) {
       state.value = '';

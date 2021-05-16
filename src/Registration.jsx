@@ -124,6 +124,7 @@ const ValidatedRegistrationForm = ({ auth }) => {
 };
 
 const Registration = () => {
+  console.log('Path', window.location.href)
   const auth = useAuth();
   return (
     <div className="row justify-content-center pt-5">

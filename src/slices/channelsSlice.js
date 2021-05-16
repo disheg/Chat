@@ -5,6 +5,7 @@ export const channelsSlice = createSlice({
   initialState: {
     currentChannelID: '1',
     channels: [],
+    isDataLoaded: false,
   },
   reducers: {
     setData: (state, action) => {
@@ -13,6 +14,7 @@ export const channelsSlice = createSlice({
       state.channels = channels;
       console.log('currentChannelID Slice', currentChannelId);
       state.currentChannelID = currentChannelId;
+      state.isDataLoaded = true;
     },
     newChannel: (state, action) => {
       state.channels.push(action.payload);

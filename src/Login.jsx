@@ -99,6 +99,7 @@ const ValidatedLoginForm = ({ auth }) => {
 };
 
 const Login = () => {
+  console.log('Path', window.location.href)
   const auth = useContext(authContext);
   const userId = JSON.parse(localStorage.getItem('userId'));
 
