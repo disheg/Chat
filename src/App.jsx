@@ -20,7 +20,7 @@ import getAuthHeader from './utils.js';
 import { setData } from './slices/channelsSlice.js';
 import Registration from './Registration.jsx';
 
-const PrivateRoute = ({ children, path }) => {
+const PrivateRoute = ({ socket, path }) => {
   const auth = useAuth();
   const userId = JSON.parse(localStorage.getItem('userId'));
   useEffect(() => {
@@ -32,29 +32,24 @@ const PrivateRoute = ({ children, path }) => {
   return (
     <Route
       path={path}
-      render={({ location }) => (auth.loggedIn
-        ? children
+      render={({ location }) => (userId
+        ? <HomePage socket={socket} userId={userId} />
         : <Redirect to={{ pathname: '/login', state: { from: location } }} />)}
     />
   );
 };
 
-const HomePage = ({ socket }) => {
+const HomePage = ({ socket, userId }) => {
+  console.log('Path HomePage', window.location.href);
   const dispatch = useDispatch();
   const isDataLoaded = useSelector((state) => state.channels.isDataLoaded);
-  const userId = JSON.parse(localStorage.getItem('userId'));
-  console.log('HomePage', localStorage);
-  console.log('check', userId && userId.token);
   useEffect(() => {
     axios.get('/api/v1/data', { headers: getAuthHeader() })
       .then((data) => {
-        console.log('new axios ', data);
+        console.log('new AXIOS ', data);
         dispatch(setData(data.data));
       });
   }, []);
-  if (!userId || !userId.token) {
-    return <Redirect to="/" />;
-  }
 
   if (!isDataLoaded) {
     return <div>Loading...</div>;
@@ -80,9 +75,7 @@ const App = ({ socket }) => (
             <Route path="/signup">
               <Registration />
             </Route>
-            <PrivateRoute path="/">
-              <HomePage socket={socket} />
-            </PrivateRoute>
+            <PrivateRoute path="/" socket={socket} />
             <Route path="*">
               <div>404 ERROR</div>
             </Route>

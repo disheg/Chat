@@ -50,6 +50,7 @@ const ChannelBtn = ({
 };
 
 const Channels = ({ socket }) => {
+  console.log('Path Channels', window.location.href)
   const [showModal, setShowModal] = useState(false);
   const [currentModal, setCurrentModal] = useState('');
   const [currentID, setCurrentID] = useState();
