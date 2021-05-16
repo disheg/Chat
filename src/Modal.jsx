@@ -7,6 +7,7 @@ const CustomModal = ({
   showModal,
   state,
   handleSubmit,
+  dataTestId,
 }) => {
   console.log('showModal', showModal);
   const [value, setValue] = useState('');
@@ -49,7 +50,7 @@ const CustomModal = ({
         <Modal.Title>Modal heading</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <input name="name" className="mb-2 form-control" value={value} onChange={handleChange}/>
+        <input name="name" className="mb-2 form-control" value={value} onChange={handleChange} data-testid={dataTestId} />
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleCloseModal}>
@@ -68,4 +69,5 @@ CustomModal.propTypes = {
   showModal: PropTypes.bool,
   state: PropTypes.object,
   handleSubmit: PropTypes.func,
+  dataTestId: PropTypes.string,
 };

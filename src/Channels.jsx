@@ -90,10 +90,12 @@ const Channels = ({ socket }) => {
     renameChannel: {
       state: UIstate,
       handleSubmit: handleSubmitRenameChannel(currentID),
+      dataTestId: 'data-testid="rename-channel"',
     },
     addChannel: {
       state: UIstate,
       handleSubmit: handleSubmitNewChannel,
+      dataTestId: 'data-testid="add-channel"',
     },
   };
 
@@ -140,6 +142,7 @@ const Channels = ({ socket }) => {
             showModal={showModal}
             state={modal[currentModal].state}
             handleSubmit={modal[currentModal].handleSubmit}
+            dataAttribute={modal[currentModal].dataTestId}
           />
         )
         : ''

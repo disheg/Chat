@@ -61,7 +61,15 @@ const Chat = ({ socket, userName }) => {
           <form noValidate onSubmit={handleSubmit(currentChannelID, message, userName)}>
             <div className="from-group">
               <div className="input-group">
-                <input name="body" aria-label="body" className="mr-2 form-control" autoFocus={true} value={message} onChange={handleChangeMessage} />
+                <input
+                  name="body"
+                  aria-label="body"
+                  className="mr-2 form-control"
+                  data-testid="new-message"
+                  autoFocus={true}
+                  value={message}
+                  onChange={handleChangeMessage}
+                />
                 {renderBtn()}
                 <div className="d-block invalid-feedback">&nbsp;</div>
               </div>
