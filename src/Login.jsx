@@ -113,6 +113,7 @@ const Login = () => {
   });
 
   if (auth.loggedIn) {
+    console.log('Redirect after Log IN')
     return <Redirect to="/" />; // TODO
   }
 
