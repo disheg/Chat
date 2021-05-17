@@ -7,7 +7,7 @@ const CustomModal = ({
   showModal,
   state,
   handleSubmit,
-  dataTestId,
+  dataAttribute,
 }) => {
   console.log('showModal', showModal);
   const [value, setValue] = useState('');
@@ -26,7 +26,7 @@ const CustomModal = ({
             setShowModal(false);
           }}
         >
-          Save Changes
+          Отправить
         </Button>
       );
     }
@@ -39,7 +39,7 @@ const CustomModal = ({
           setShowModal(false);
         }}
       >
-        Save Changes
+        Отправить
       </Button>
     );
   };
@@ -50,11 +50,11 @@ const CustomModal = ({
         <Modal.Title>Modal heading</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <input name="name" className="mb-2 form-control" value={value} onChange={handleChange} data-testid={dataTestId} />
+        <input name="name" className="mb-2 form-control" value={value} onChange={handleChange} data-testid={dataAttribute} />
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleCloseModal}>
-          Close
+          Отменить
         </Button>
         {renderBtn()}
       </Modal.Footer>

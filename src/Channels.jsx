@@ -91,12 +91,12 @@ const Channels = ({ socket }) => {
     renameChannel: {
       state: UIstate,
       handleSubmit: handleSubmitRenameChannel(currentID),
-      dataTestId: 'data-testid="rename-channel"',
+      dataTestId: 'rename-channel',
     },
     addChannel: {
       state: UIstate,
       handleSubmit: handleSubmitNewChannel,
-      dataTestId: 'data-testid="add-channel"',
+      dataTestId: 'add-channel',
     },
   };
 
