@@ -8,25 +8,6 @@ import { changeMessage, newMessage } from './slices/messagesSlice.js';
 import Header from './Header.jsx';
 
 const MessageInput = ({ socket, channelId, userName }) => {
-  const dispatch = useDispatch();
-
-  const message = useSelector((state) => state.message.value);
-  const messageState = useSelector((state) => state.message.state);
-
-  const handleChangeMessage = (e) => dispatch(changeMessage(e.target.value));
-  const handleSubmit = (currentChannelID, message, user) => (e) => {
-    e.preventDefault();
-    socket.emit('newMessage', { channelId : currentChannelID, message, user }, () => {
-      console.log('Message sended');
-    });
-  };
-  const renderBtn = () => {
-    if (messageState === 'sending') {
-      return <button type="submit" role="button" aria-name="Отправить" aria-label="submit" className="btn btn-primary" disabled>Отправить</button>;
-    }
-    return <button type="submit" role="button" aria-name="Отправить" aria-label="submit" className="btn btn-primary">Отправить</button>;
-  };
-
   const formik = useFormik({
     initialValues: {
       body: '',
@@ -62,7 +43,7 @@ const MessageInput = ({ socket, channelId, userName }) => {
             value={formik.values.body}
             onChange={formik.handleChange}
           />
-          <button type="submit" role="button" aria-label="submit" className="btn btn-primary" disabled={formik.isSubmitting}>Отправить</button>
+          <button type="button" role="button" aria-label="submit" className="btn btn-primary" disabled={formik.isSubmitting}>Отправить</button>
           <div className="d-block invalid-feedback">&nbsp;</div>
         </div>
       </div>
