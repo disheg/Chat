@@ -18,7 +18,6 @@ const MessageInput = ({ socket, channelId, userName }) => {
       console.log('Message sended');
     });
   };
-
   const renderBtn = () => {
     if (messageState === 'sending') {
       return <button role="button" aria-name="Отправить" aria-label="submit" type="submit" className="btn btn-primary" disabled>Отправить</button>;
