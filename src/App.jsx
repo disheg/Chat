@@ -57,15 +57,9 @@ const Body = ({ socket }) => {
             ) : (
               <Redirect to={{ pathname: '/login', state: { from: location } }} />
             )} />
-        <Route path="/login">
-          <Login />
-        </Route>
-        <Route path="/signup">
-          <Registration />
-        </Route>
-        <Route path="*">
-          <div>404 ERROR</div>
-        </Route>
+        <Route path="/login" render={() => <Login />} />
+        <Route path="/signup" render={() => <Registration />} />
+        <Route path="*" render={() => <div>404 ERROR</div>} />
       </Switch>
   );
 };
