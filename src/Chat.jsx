@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useFormik, yupToFormErrors } from 'formik';
+import { useFormik } from 'formik';
+import { Button } from 'react-bootstrap';
 import * as yup from 'yup';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
@@ -43,7 +44,7 @@ const MessageInput = ({ socket, channelId, userName }) => {
             value={formik.values.body}
             onChange={formik.handleChange}
           />
-          <button type="button" role="button" aria-label="button" className="btn btn-primary" disabled={formik.isSubmitting}>Отправить</button>
+          <Button type="button" variant="primary" disabled={formik.isSubmitting}>Отправить</Button>
           <div className="d-block invalid-feedback">&nbsp;</div>
         </div>
       </div>
