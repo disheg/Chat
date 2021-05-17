@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import useAuth from './hooks/index.js';
-import authContext from './contexts/index.js';
+import { authContext } from './contexts/index.js';
 
 const Header = () => {
   const auth = useContext(authContext);

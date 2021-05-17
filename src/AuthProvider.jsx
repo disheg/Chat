@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
-import authContext from './contexts/index.js';
+import { authContext } from './contexts/index.js';
 
 const AuthProvider = ({ children }) => {
   //const userId = JSON.parse(localStorage.getItem('userId'));

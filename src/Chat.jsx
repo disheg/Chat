@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
 import { Button } from 'react-bootstrap';
@@ -7,8 +7,10 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { changeMessage, newMessage } from './slices/messagesSlice.js';
 import Header from './Header.jsx';
+import { socketContext } from './contexts/index.js';
 
-const MessageInput = ({ socket, channelId, userName }) => {
+const MessageInput = ({ channelId, userName }) => {
+  const socket = useContext(socketContext);
   const formik = useFormik({
     initialValues: {
       body: '',
@@ -52,8 +54,9 @@ const MessageInput = ({ socket, channelId, userName }) => {
   );
 };
 
-const Chat = ({ socket, userName }) => {
+const Chat = ({ userName }) => {
   console.log('Path', window.location.href)
+  const socket = useContext(socketContext);
   const dispatch = useDispatch();
 
   console.log('username', userName);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
   Button,
@@ -16,6 +16,7 @@ import {
   removeChannel,
   changeChannel,
 } from './slices/channelsSlice.js';
+import { socketContext } from './contexts/index.js';
 
 const ChannelBtn = ({
   id,
@@ -49,8 +50,9 @@ const ChannelBtn = ({
   );
 };
 
-const Channels = ({ socket }) => {
+const Channels = () => {
   console.log('Path Channels', window.location.href)
+  const socket = useContext(socketContext);
   const [showModal, setShowModal] = useState(false);
   const [currentModal, setCurrentModal] = useState('');
   const [currentID, setCurrentID] = useState();

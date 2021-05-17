@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -20,7 +20,7 @@ import getAuthHeader from './utils.js';
 import { setData } from './slices/channelsSlice.js';
 import Registration from './Registration.jsx';
 
-const HomePage = ({ socket }) => {
+const HomePage = () => {
   console.log('Path HomePage', window.location.href);
   const dispatch = useDispatch();
   const isDataLoaded = useSelector((state) => state.channels.isDataLoaded);
@@ -36,54 +36,46 @@ const HomePage = ({ socket }) => {
   if (!isDataLoaded) {
     return <div>Loading...</div>;
   }
-  return (<>
-    <Header />
-    <div className="row h-100 pb-3">
-      <Channels socket={socket} />
-      <Chat id={1} socket={socket} userName={userId.username} />
-    </div>
-    </>
-  );
-};
-
-const Body = ({ socket }) => {
-  const auth = useAuth();
-  console.log('auth.isLoggedIn()', auth.isLoggedIn())
-  return (
-      <Switch>
-        <Route exact path="/" render={({ location }) => auth.isLoggedIn()
-          ? (
-              <HomePage socket={socket} />
-            ) : (
-              <Redirect to={{ pathname: '/login', state: { from: location } }} />
-            )} />
-        <Route path="/login" render={() => <Login />} />
-        <Route path="/signup" render={() => <Registration />} />
-        <Route path="*" render={() => <div>404 ERROR</div>} />
-      </Switch>
-  );
-};
-
-const App = ({ socket }) => {
   return (
     <>
-      <Provider store={store}>
-        <AuthProvider>
-          <Router>
-            <Body socket={socket} />
-          </Router>
-        </AuthProvider>
-      </Provider>
+      <Header />
+      <div className="row h-100 pb-3">
+        <Channels />
+        <Chat id={1} userName={userId.username} />
+      </div>
     </>
   );
 };
 
+const Body = () => {
+  const auth = useAuth();
+  return (
+    <Switch>
+      <Route
+        exact
+        path="/"
+        render={({ location }) => (auth.isLoggedIn()
+          ? (
+            <HomePage />
+          ) : (
+            <Redirect to={{ pathname: '/login', state: { from: location } }} />
+          ))}
+      />
+      <Route path="/login" render={() => <Login />} />
+      <Route path="/signup" render={() => <Registration />} />
+      <Route path="*" render={() => <div>404 ERROR</div>} />
+    </Switch>
+  );
+};
+
+const App = () => (
+  <Provider store={store}>
+    <AuthProvider>
+      <Router>
+        <Body />
+      </Router>
+    </AuthProvider>
+  </Provider>
+);
+
 export default App;
-
-App.propTypes = {
-  socket: PropTypes.object,
-};
-
-HomePage.propTypes = {
-  socket: PropTypes.object,
-};
