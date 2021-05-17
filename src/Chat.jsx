@@ -43,7 +43,7 @@ const MessageInput = ({ socket, channelId, userName }) => {
             value={formik.values.body}
             onChange={formik.handleChange}
           />
-          <button type="button" role="button" aria-label="submit" className="btn btn-primary" disabled={formik.isSubmitting}>Отправить</button>
+          <button type="button" role="button" aria-label="button" className="btn btn-primary" disabled={formik.isSubmitting}>Отправить</button>
           <div className="d-block invalid-feedback">&nbsp;</div>
         </div>
       </div>
