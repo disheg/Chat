@@ -6,6 +6,7 @@ import axios from 'axios';
 import { Link, useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import useAuth from './hooks/index.js';
+import Header from './Header.jsx';
 
 const ValidatedLoginForm = ({ auth }) => {
   const [isAuthFailed, setIsAuthFailed] = useState(false);
@@ -24,8 +25,7 @@ const ValidatedLoginForm = ({ auth }) => {
         axios.post('/api/v1/login', values)
           .then((data) => {
             console.log('User Log In DATA', data);
-            localStorage.setItem('userId', JSON.stringify(data.data));
-            auth.logIn();
+            auth.logIn(JSON.stringify(data.data));
             history.replace('/');
             console.log('User Logg In')
           })
@@ -107,18 +107,10 @@ const ValidatedLoginForm = ({ auth }) => {
 const Login = () => {
   console.log('Path', window.location.href)
   const auth = useAuth();
-  const userId = JSON.parse(localStorage.getItem('userId'));
-
-  useEffect(() => {
-    if (userId && userId.token) {
-      auth.logIn();
-    }
-  }, []);
-
-
 
   console.log(auth);
-  return (
+  return (<>
+    <Header />
     <div className="container-fluid">
       <div className="row justify-content-center pt-5">
         <div className="col-sm-4">
@@ -126,6 +118,7 @@ const Login = () => {
         </div>
       </div>
     </div>
+  </>
   );
 };
 

@@ -27,9 +27,9 @@ const ValidatedRegistrationForm = ({ auth }) => {
       onSubmit={({ username, password }, { setSubmitting }) => {
         axios.post('/api/v1/signup', { username, password })
           .then((response) => {
-            console.log('User Log In DATA', response.data);
-            localStorage.setItem('userId', JSON.stringify(response.data));
-            auth.logIn();
+            console.log('User Reg In DATA', response.data);
+            auth.logIn(JSON.stringify(response.data));
+            console.log('REG USER COMPLITED')
             history.replace('/');
           })
           .catch((err) => {

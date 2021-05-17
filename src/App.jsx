@@ -36,36 +36,37 @@ const HomePage = ({ socket }) => {
   if (!isDataLoaded) {
     return <div>Loading...</div>;
   }
-  return (
+  return (<>
+    <Header />
     <div className="row h-100 pb-3">
       <Channels socket={socket} />
       <Chat id={1} socket={socket} userName={userId.username} />
     </div>
+    </>
   );
 };
 
 const Body = ({ socket }) => {
   const auth = useAuth();
+  console.log('auth.isLoggedIn()', auth.isLoggedIn())
   return (
-    <Router>
-            <Switch>
-              <Route exact path="/" render={({ location }) => auth.loggedIn
-                ? (
-                  <HomePage socket={socket} />
-                ) : (
-                  <Redirect to={{ pathname: '/login', state: { from: location } }} />
-                )} />
-              <Route path="/login">
-                <Login />
-              </Route>
-              <Route path="/signup">
-                <Registration />
-              </Route>
-              <Route path="*">
-                <div>404 ERROR</div>
-              </Route>
-            </Switch>
-          </Router>
+      <Switch>
+        <Route exact path="/" render={({ location }) => auth.isLoggedIn()
+          ? (
+              <HomePage socket={socket} />
+            ) : (
+              <Redirect to={{ pathname: '/login', state: { from: location } }} />
+            )} />
+        <Route path="/login">
+          <Login />
+        </Route>
+        <Route path="/signup">
+          <Registration />
+        </Route>
+        <Route path="*">
+          <div>404 ERROR</div>
+        </Route>
+      </Switch>
   );
 };
 
@@ -74,8 +75,9 @@ const App = ({ socket }) => {
     <>
       <Provider store={store}>
         <AuthProvider>
-          <Header />
-          <Body socket={socket} />
+          <Router>
+            <Body socket={socket} />
+          </Router>
         </AuthProvider>
       </Provider>
     </>

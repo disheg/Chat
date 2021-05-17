@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { changeMessage, newMessage } from './slices/messagesSlice.js';
+import Header from './Header.jsx';
 
 const MessageInput = ({ socket, channelId, userName }) => {
   const dispatch = useDispatch();
@@ -76,7 +77,7 @@ const Chat = ({ socket, userName }) => {
   console.log('currentMessage', currentMessage);
   console.log('renderMessages', renderMessages);
 
-  return (
+  return (<>
     <div className="col h-100">
       <div className="d-flex flex-column h-100">
         <div id="messages-box" className="chat-messages overflow-auto mb-3">
@@ -87,6 +88,7 @@ const Chat = ({ socket, userName }) => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
