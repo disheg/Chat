@@ -6,6 +6,7 @@ import axios from 'axios';
 import { Redirect, useHistory } from 'react-router-dom';
 
 import useAuth from './hooks/index.js';
+import Header from './Header.jsx';
 
 const ValidatedRegistrationForm = ({ auth }) => {
   const [msgError, setMsgError] = useState('');
@@ -127,12 +128,14 @@ const Registration = () => {
   console.log('Path', window.location.href)
   const auth = useAuth();
 
-  return (
+  return (<>
+    <Header />
     <div className="row justify-content-center pt-5">
       <div className="col-sm-4">
         <ValidatedRegistrationForm auth={auth} />
       </div>
     </div>
+  </>
   );
 };
 
