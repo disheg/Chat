@@ -38,7 +38,7 @@ const MessageInput = ({ socket, channelId, userName }) => {
             value={message}
             onChange={handleChangeMessage}
           />
-          {renderBtn()}
+          <button type="submit" role="button" aria-name="Отправить" aria-label="submit" className="btn btn-primary">Отправить</button>
           <div className="d-block invalid-feedback">&nbsp;</div>
         </div>
       </div>
