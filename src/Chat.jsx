@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useFormik, yupToFormErrors } from 'formik';
+import * as yup from 'yup';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { changeMessage, newMessage } from './slices/messagesSlice.js';
@@ -25,20 +27,42 @@ const MessageInput = ({ socket, channelId, userName }) => {
     return <button type="submit" role="button" aria-name="Отправить" aria-label="submit" className="btn btn-primary">Отправить</button>;
   };
 
+  const formik = useFormik({
+    initialValues: {
+      body: '',
+    },
+    validationSchema: yup.object().shape({
+      body: yup.string().required(),
+    }),
+    validateOnBlur: false,
+    onSubmit: ({ body }, { setErrors, resetForm }) => {
+      const message = {
+        user: userName,
+        message: body,
+        channelId: channelId,
+      };
+      socket.emit('newMessage', message, () => {
+        resetForm();
+        console.log('Message sended');
+      });
+    }
+  })
+
   return (
-    <form noValidate onSubmit={handleSubmit(channelId, message, userName)}>
+    <form noValidate onSubmit={formik.handleSubmit} onChange={formik.handleChange}>
       <div className="from-group">
         <div className="input-group">
           <input
+            id="body"
             name="body"
             aria-label="body"
             className="mr-2 form-control"
             data-testid="new-message"
             autoFocus={true}
-            value={message}
-            onChange={handleChangeMessage}
+            value={formik.values.body}
+            onChange={formik.handleChange}
           />
-          <button type="submit" role="button" aria-name="Отправить" aria-label="submit" className="btn btn-primary">Отправить</button>
+          <button type="submit" role="button" aria-label="submit" className="btn btn-primary" disabled={formik.isSubmitting}>Отправить</button>
           <div className="d-block invalid-feedback">&nbsp;</div>
         </div>
       </div>
