@@ -21,9 +21,9 @@ const MessageInput = ({ socket, channelId, userName }) => {
 
   const renderBtn = () => {
     if (messageState === 'sending') {
-      return <button aria-label="submit" type="submit" className="btn btn-primary" disabled>Отправить</button>;
+      return <button role="button" aria-label="submit" type="submit" className="btn btn-primary" disabled>Отправить</button>;
     }
-    return <button aria-label="submit" type="submit" className="btn btn-primary">Отправить</button>;
+    return <button role="button" aria-label="submit" type="submit" className="btn btn-primary">Отправить</button>;
   };
 
   return (
