@@ -11,52 +11,29 @@ const channelsSlice = createSlice({
     setData: (state, action) => {
       console.log('getChannels', action.payload);
       const { channels, currentChannelId } = action.payload;
+      state.channels = channels;
       console.log('currentChannelID Slice', currentChannelId);
-      return {
-        ...state,
-        channels,
-        currentChannelId,
-        isDataLoaded: true,
-      };
+      state.currentChannelID = currentChannelId;
+      state.isDataLoaded = true;
     },
     newChannel: (state, action) => {
-      const channels = [...state.channels, action.payload];
-      return {
-        ...state,
-        channels,
-      };
+      state.channels.push(action.payload);
     },
     renameChannel: (state, action) => {
       const { id } = action.payload;
       console.log('rename Socket', action.payload);
       const newName = action.payload.name;
-      const channels = state.channels.map((channel) => {
-        console.log('channel id', channel.id);
-        if (channel.id === parseInt(id, 10)) {
-          return { ...channel, name: newName };
-        }
-        return channel;
-      });
-      console.log(channels);
-      return {
-        ...state,
-        channels,
-      };
+      const currentChannel = state.channels.find((channel) => channel.id === id);
+      currentChannel.name = newName;
     },
     removeChannel: (state, action) => {
       const { id } = action.payload;
       const channels = state.channels.filter((channel) => channel.id !== parseInt(id, 10));
-      return {
-        ...state,
-        channels,
-      };
+      state.channels = channels;
     },
     changeChannel: (state, action) => {
       const { id } = action.payload;
-      return {
-        ...state,
-        currentChannelId: id,
-      };
+      state.currentChannelID = id;
     },
   },
   extraReducers: {

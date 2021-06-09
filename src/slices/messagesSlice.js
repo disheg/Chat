@@ -13,34 +13,21 @@ const messagesSlice = createSlice({
     newMessage: (state, action) => {
       console.log('action', action);
       const message = action.payload;
-      const messages = [...state.messages, message];
-      return {
-        ...state,
-        value: '',
-        messages,
-      };
+      state.value = '';
+      state.messages.push(message);
     },
   },
   extraReducers: {
     [setData](state, action) {
       console.log('setData Message', action);
-      const { messages } = action.payload;
+      state.messages = action.payload.messages;
       state.isDataLoaded = true;
-      return {
-        ...state,
-        messages,
-        isDataLoaded: true,
-      };
     },
     [removeChannel](state, action) {
       console.log('remove message', action.payload);
       const { id } = action.payload;
-      const messages = state.messages
+      state.messages = state.messages
         .filter(({ channelId }) => parseInt(channelId, 10) !== parseInt(id, 10));
-      return {
-        ...state,
-        messages,
-      };
     },
   },
 });
