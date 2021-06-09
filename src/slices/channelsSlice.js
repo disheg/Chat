@@ -15,9 +15,19 @@ const channelsSlice = createSlice({
       console.log('currentChannelID Slice', currentChannelId);
       state.currentChannelID = currentChannelId;
       state.isDataLoaded = true;
+      return {
+        channels,
+        currentChannelId,
+        isDataLoaded: true,
+      };
     },
     newChannel: (state, action) => {
       state.channels.push(action.payload);
+      const channels = [...state.channels, action.payload];
+      return {
+        ...state,
+        channels,
+      };
     },
     renameChannel: (state, action) => {
       const { id } = action.payload;
@@ -31,16 +41,25 @@ const channelsSlice = createSlice({
         return channel;
       });
       console.log(channels);
-      state.channels = channels;
+      return {
+        ...state,
+        channels,
+      };
     },
     removeChannel: (state, action) => {
       const { id } = action.payload;
       const channels = state.channels.filter((channel) => channel.id !== parseInt(id, 10));
-      state.channels = channels;
+      return {
+        ...state,
+        channels,
+      };
     },
     changeChannel: (state, action) => {
       const { id } = action.payload;
-      state.currentChannelID = id;
+      return {
+        ...state,
+        currentChannelId: id,
+      };
     },
   },
   extraReducers: {
