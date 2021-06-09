@@ -13,6 +13,7 @@ const channelsSlice = createSlice({
       const { channels, currentChannelId } = action.payload;
       console.log('currentChannelID Slice', currentChannelId);
       return {
+        ...state,
         channels,
         currentChannelId,
         isDataLoaded: true,
