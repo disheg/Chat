@@ -6,7 +6,6 @@ import {
   Redirect,
 } from 'react-router-dom';
 import axios from 'axios';
-import PropTypes from 'prop-types';
 
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import store from './store/store.js';
@@ -31,7 +30,7 @@ const HomePage = () => {
         console.log('new AXIOS ', data);
         dispatch(setData(data.data));
       });
-  }, []);
+  }, [dispatch]);
 
   if (!isDataLoaded) {
     return <div>Loading...</div>;

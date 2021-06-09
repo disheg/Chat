@@ -65,9 +65,9 @@ const CustomModal = ({
 export default CustomModal;
 
 CustomModal.propTypes = {
-  setShowModal: PropTypes.func,
-  showModal: PropTypes.bool,
-  state: PropTypes.object,
-  handleSubmit: PropTypes.func,
-  dataTestId: PropTypes.string,
+  setShowModal: PropTypes.func.isRequired,
+  showModal: PropTypes.bool.isRequired,
+  state: PropTypes.string.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
+  dataAttribute: PropTypes.string.isRequired,
 };

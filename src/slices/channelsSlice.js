@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-export const channelsSlice = createSlice({
+const channelsSlice = createSlice({
   name: 'channels',
   initialState: {
     currentChannelID: '1',
@@ -26,7 +26,7 @@ export const channelsSlice = createSlice({
       const channels = state.channels.map((channel) => {
         console.log('channel id', channel.id);
         if (channel.id === parseInt(id, 10)) {
-          channel.name = newName;
+          return { ...channel, name: newName };
         }
         return channel;
       });

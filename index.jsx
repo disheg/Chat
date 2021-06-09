@@ -3,7 +3,7 @@ import React from 'react';
 import App from './src/App.jsx';
 import { socketContext } from './src/contexts/index.js';
 
-export default (socket) => {
+const init = (socket) => {
   console.log('it works!');
   return (
     <socketContext.Provider value={socket}>
@@ -11,3 +11,5 @@ export default (socket) => {
     </socketContext.Provider>
   );
 };
+
+export default init;

@@ -5,8 +5,7 @@ import { Button } from 'react-bootstrap';
 import * as yup from 'yup';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { changeMessage, newMessage } from './slices/messagesSlice.js';
-import Header from './Header.jsx';
+import { newMessage } from './slices/messagesSlice.js';
 import { socketContext } from './contexts/index.js';
 
 const MessageInput = ({ channelId, userName }) => {
@@ -19,18 +18,18 @@ const MessageInput = ({ channelId, userName }) => {
       body: yup.string().required(),
     }),
     validateOnBlur: false,
-    onSubmit: ({ body }, { setErrors, resetForm }) => {
+    onSubmit: ({ body }, { resetForm }) => {
       const message = {
         user: userName,
         message: body,
-        channelId: channelId,
+        channelId,
       };
       socket.emit('newMessage', message, () => {
         resetForm();
         console.log('Message sended');
       });
-    }
-  })
+    },
+  });
 
   return (
     <form noValidate onSubmit={formik.handleSubmit} onChange={formik.handleChange}>
@@ -42,7 +41,6 @@ const MessageInput = ({ channelId, userName }) => {
             aria-label="body"
             className="mr-2 form-control"
             data-testid="new-message"
-            autoFocus={true}
             value={formik.values.body}
             onChange={formik.handleChange}
           />
@@ -55,7 +53,7 @@ const MessageInput = ({ channelId, userName }) => {
 };
 
 const Chat = ({ userName }) => {
-  console.log('Path', window.location.href)
+  console.log('Path', window.location.href);
   const socket = useContext(socketContext);
   const dispatch = useDispatch();
 
@@ -69,7 +67,7 @@ const Chat = ({ userName }) => {
 
   useEffect(() => {
     socket.on('newMessage', (data) => dispatch(newMessage(data)));
-  }, []);
+  }, [dispatch, socket]);
 
   const currentMessage = messages.filter(
     ({ channelId }) => parseInt(channelId, 10) === parseInt(currentChannelID, 10),
@@ -85,17 +83,18 @@ const Chat = ({ userName }) => {
   console.log('currentMessage', currentMessage);
   console.log('renderMessages', renderMessages);
 
-  return (<>
-    <div className="col h-100">
-      <div className="d-flex flex-column h-100">
-        <div id="messages-box" className="chat-messages overflow-auto mb-3">
-          {renderMessages}
-        </div>
-        <div className="mt-auto">
-          <MessageInput channelId={currentChannelID} userName={userName} socket={socket} />
+  return (
+    <>
+      <div className="col h-100">
+        <div className="d-flex flex-column h-100">
+          <div id="messages-box" className="chat-messages overflow-auto mb-3">
+            {renderMessages}
+          </div>
+          <div className="mt-auto">
+            <MessageInput channelId={currentChannelID} userName={userName} socket={socket} />
+          </div>
         </div>
       </div>
-    </div>
     </>
   );
 };
@@ -103,6 +102,5 @@ const Chat = ({ userName }) => {
 export default Chat;
 
 Chat.propTypes = {
-  socket: PropTypes.object,
-  userName: PropTypes.string,
+  userName: PropTypes.string.isRequired,
 };

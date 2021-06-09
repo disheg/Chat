@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import Channels from './Channels.jsx';
 import Chat from './Chat.jsx';
 
@@ -11,7 +10,3 @@ const HomePage = ({ socket }) => (
 );
 
 export default HomePage;
-
-HomePage.propTypes = {
-  socket: PropTypes.object,
-};

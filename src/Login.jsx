@@ -1,16 +1,16 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
 import { Link, useHistory } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import useAuth from './hooks/index.js';
 import Header from './Header.jsx';
 
-const ValidatedLoginForm = ({ auth }) => {
+const ValidatedLoginForm = () => {
   const [isAuthFailed, setIsAuthFailed] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const auth = useAuth();
   const history = useHistory();
   if (isAuthFailed) {
     setErrorMessage('Неверные имя пользователя или пароль');
@@ -21,13 +21,11 @@ const ValidatedLoginForm = ({ auth }) => {
     <Formik
       initialValues={{ username: '', password: '' }}
       onSubmit={(values, { setSubmitting }) => {
-        
         axios.post('/api/v1/login', values)
           .then((data) => {
             console.log('User Log In DATA', data);
             auth.logIn(JSON.stringify(data.data));
             history.replace('/');
-            console.log('User Logg In')
           })
           .catch((err) => {
             console.log('User Log In FAILED');
@@ -59,36 +57,40 @@ const ValidatedLoginForm = ({ auth }) => {
         return (
           <form className="p-3" onSubmit={handleSubmit}>
             <div className="form-group">
-              <label className="form-label" htmlFor="username">Ваш ник</label>
-              <input
-                name="username"
-                type="text"
-                id="username"
-                placeholder="Enter your username"
-                value={values.username}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={`form-control ${(errorMessage || (errors.username && touched.username)) && 'is-invalid'}`}
-              />
-              {(errorMessage || (errors.username && touched.username)) && (
-                <div className="invalid-feedback">{errors.username}</div>
-              )}
+              <label className="form-label" htmlFor="username">
+                Ваш ник
+                <input
+                  name="username"
+                  type="text"
+                  id="username"
+                  placeholder="Enter your username"
+                  value={values.username}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className={`form-control ${(errorMessage || (errors.username && touched.username)) && 'is-invalid'}`}
+                />
+                {(errorMessage || (errors.username && touched.username)) && (
+                  <div className="invalid-feedback">{errors.username}</div>
+                )}
+              </label>
             </div>
             <div className="form-group">
-              <label className="form-label" htmlFor="password">Пароль</label>
-              <input
-                name="password"
-                type="password"
-                id="password"
-                placeholder="Enter your password"
-                value={values.password}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={`form-control ${(errorMessage || (errors.password && touched.password)) && 'is-invalid'}`}
-              />
-              {(errorMessage || (errors.password && touched.password)) && (
-                <div className="invalid-feedback">{errors.password || errorMessage}</div>
-              )}
+              <label className="form-label" htmlFor="password">
+                Пароль
+                <input
+                  name="password"
+                  type="password"
+                  id="password"
+                  placeholder="Enter your password"
+                  value={values.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className={`form-control ${(errorMessage || (errors.password && touched.password)) && 'is-invalid'}`}
+                />
+                {(errorMessage || (errors.password && touched.password)) && (
+                  <div className="invalid-feedback">{errors.password || errorMessage}</div>
+                )}
+              </label>
             </div>
             <button type="submit" className="w-100 mb-3 btn btn-outline-primary" disabled={isSubmitting}>
               Войти
@@ -104,26 +106,17 @@ const ValidatedLoginForm = ({ auth }) => {
   );
 };
 
-const Login = () => {
-  console.log('Path', window.location.href)
-  const auth = useAuth();
-
-  console.log(auth);
-  return (<>
+const Login = () => (
+  <>
     <Header />
     <div className="container-fluid">
       <div className="row justify-content-center pt-5">
         <div className="col-sm-4">
-          <ValidatedLoginForm auth={auth} />
+          <ValidatedLoginForm />
         </div>
       </div>
     </div>
   </>
-  );
-};
+);
 
 export default Login;
-
-ValidatedLoginForm.propTypes = {
-  auth: PropTypes.object,
-};

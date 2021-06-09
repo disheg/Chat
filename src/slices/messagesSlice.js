@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { setData, removeChannel, changeChannel } from './channelsSlice.js';
+import { setData, removeChannel } from './channelsSlice.js';
 
-export const messagesSlice = createSlice({
+const messagesSlice = createSlice({
   name: 'messages',
   initialState: {
     value: '',
@@ -10,9 +10,6 @@ export const messagesSlice = createSlice({
     isDataLoaded: false,
   },
   reducers: {
-    changeMessage: (state, action) => {
-      state.value = action.payload;
-    },
     newMessage: (state, action) => {
       console.log('action', action);
       const message = action.payload;
@@ -26,9 +23,6 @@ export const messagesSlice = createSlice({
       state.messages = action.payload.messages;
       state.isDataLoaded = true;
     },
-    [changeChannel](state) {
-      state.value = '';
-    },
     [removeChannel](state, action) {
       console.log('remove message', action.payload);
       const { id } = action.payload;
@@ -39,10 +33,6 @@ export const messagesSlice = createSlice({
 });
 
 export const {
-  changeMessage,
   newMessage,
-  sending,
-  failed,
-  successful,
 } = messagesSlice.actions;
 export default messagesSlice.reducer;

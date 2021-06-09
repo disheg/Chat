@@ -51,7 +51,7 @@ const ChannelBtn = ({
 };
 
 const Channels = () => {
-  console.log('Path Channels', window.location.href)
+  console.log('Path Channels', window.location.href);
   const socket = useContext(socketContext);
   const [showModal, setShowModal] = useState(false);
   const [currentModal, setCurrentModal] = useState('');
@@ -66,7 +66,7 @@ const Channels = () => {
     socket.on('newChannel', (data) => dispatch(newChannel(data)));
     socket.on('renameChannel', (data) => dispatch(renameChannel(data)));
     socket.on('removeChannel', (data) => dispatch(removeChannel(data)));
-  }, []);
+  }, [dispatch, socket]);
 
   const handleSubmitNewChannel = (channelName) => {
     if (channelName) {
@@ -157,15 +157,11 @@ const Channels = () => {
 export default Channels;
 
 ChannelBtn.propTypes = {
-  id: PropTypes.number,
-  name: PropTypes.string,
-  currentChannelID: PropTypes.number,
-  removable: PropTypes.bool,
-  handleChangeChannel: PropTypes.func,
-  handleRemoveChannel: PropTypes.func,
-  handleChangeChannelName: PropTypes.func,
-};
-
-Channels.propTypes = {
-  socket: PropTypes.object,
+  id: PropTypes.number.isRequired,
+  name: PropTypes.string.isRequired,
+  currentChannelID: PropTypes.number.isRequired,
+  removable: PropTypes.bool.isRequired,
+  handleChangeChannel: PropTypes.func.isRequired,
+  handleRemoveChannel: PropTypes.func.isRequired,
+  handleChangeChannelName: PropTypes.func.isRequired,
 };
