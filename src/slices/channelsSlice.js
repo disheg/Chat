@@ -11,10 +11,7 @@ const channelsSlice = createSlice({
     setData: (state, action) => {
       console.log('getChannels', action.payload);
       const { channels, currentChannelId } = action.payload;
-      state.channels = channels;
       console.log('currentChannelID Slice', currentChannelId);
-      state.currentChannelID = currentChannelId;
-      state.isDataLoaded = true;
       return {
         channels,
         currentChannelId,
@@ -22,7 +19,6 @@ const channelsSlice = createSlice({
       };
     },
     newChannel: (state, action) => {
-      state.channels.push(action.payload);
       const channels = [...state.channels, action.payload];
       return {
         ...state,
